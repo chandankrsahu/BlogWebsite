@@ -2,12 +2,16 @@
 <%-include("partials/header");-%>
 
 <h1>Home</h1>
+<p><%=(some)%></p>
 
 <%posts.forEach(function(e){%>
-	<%console.log(e.title)%>
+	<h1><%=e.title%></h1>
+	<p><%=e.post.substring(0,100)+" ...."%>
+	<a href="/posts/<%=e.title%>">Read More</a>
+	</p>
 <%})%>
 
 
-<p><%=some%></p>
+
 
 <%-include("partials/footer");-%>
