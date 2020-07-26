@@ -4,6 +4,17 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/blogDb', {useNewUrlParser: true, useUnifiedTopology: true});
+
+
+const blogSchema={
+	title:String,
+	postBody:String
+};
+
+const Post =mongoose.model("Post",blogSchema);
+
 let posts=[];
 
 const homeStartingContent = "Lacus vel facilisis volutpat est velit egestas dui id ornare. Semper auctor neque vitae tempus quam. Sit amet cursus sit amet dictum sit amet justo. Viverra tellus in hac habitasse. Imperdiet proin fermentum leo vel orci porta. Donec ultrices tincidunt arcu non sodales neque sodales ut. Mattis molestie a iaculis at erat pellentesque adipiscing. Magnis dis parturient montes nascetur ridiculus mus mauris vitae ultricies. Adipiscing elit ut aliquam purus sit amet luctus venenatis lectus. Ultrices vitae auctor eu augue ut lectus arcu bibendum at. Odio euismod lacinia at quis risus sed vulputate odio ut. Cursus mattis molestie a iaculis at erat pellentesque adipiscing.";
@@ -20,20 +31,36 @@ app.use(express.static("public"));
 
 
 app.get("/",function(req,res){
-	res.render("home",{some:homeStartingContent,posts:posts});
+
+	Post.find({}, function(err, posts){
+
+   res.render("home", {
+
+     some: homeStartingContent,
+
+     posts: posts
+
+     });
+
+ });
+	
 });
 
-app.get("/posts/:kuch",function(req,res){
-	const x=(req.params.kuch);
-	// var f=0;
-	for(var i=0;i<posts.length;i++)
-	{
-		if(_.lowerCase(x)==_.lowerCase(posts[i].title))
-		{
-			res.render("post",{title:posts[i].title,post:posts[i].post});
-			
-		}	
-	}
+app.get("/posts/:postId",function(req,res){
+	const x=(req.params.postId);
+
+	Post.findOne({_id: x}, function(err, post){
+
+   res.render("post", {
+
+     title: post.title,
+
+     post: post.postBody
+
+   });
+
+ });
+
 	
 
 });
@@ -51,11 +78,11 @@ app.get("/compose",function(req,res){
 
 });
 app.post("/compose",function(req,res){
-	const x={
+	const post= new Post({
 		title:req.body.title,
-		post:req.body.post
-	};
-	posts.push(x);
+		postBody:req.body.post
+	});
+	post.save();
 	res.redirect("/");
 	
 });

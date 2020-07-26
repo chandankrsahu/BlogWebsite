@@ -6,8 +6,8 @@
 
 <%posts.forEach(function(e){%>
 	<h1><%=e.title%></h1>
-	<p><%=e.post.substring(0,100)+" ...."%>
-	<a href="/posts/<%=e.title%>">Read More</a>
+	<p><%=e.postBody.substring(0,100)+" ...."%>
+	<a href="/posts/<%=e._id%>">Read More</a>
 	</p>
 <%})%>
 
